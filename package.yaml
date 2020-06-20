@@ -1,0 +1,37 @@
+name:               elliot-marsden-site
+version:             0.1.0.0
+license:             BSD3
+author:              "Elliot Marsden"
+maintainer:          "elliot.marsden@gmail.com"
+copyright:           "Copyright (c) 2020 Elliot Marsden"
+
+dependencies:
+- base
+- directory
+- extra
+- filepath
+- hakyll==4.13.3.0
+- split
+
+ghc-options:
+- -threaded
+- -Wall
+- -Wcompat
+- -Wincomplete-record-updates
+- -Wincomplete-uni-patterns
+- -Wredundant-constraints
+- -Wno-warnings-deprecations
+- -Wno-incomplete-patterns
+- -Wno-incomplete-uni-patterns
+- -Wmissing-deriving-strategies
+- -O0
+- +RTS -A128m -n2m -RTS
+- -j
+
+executables:
+  site:
+    main: Site.hs
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N

@@ -14,9 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
       with:
-        name: eddiejessup/eddiejessup.github.io
+        name: Site
         repository: eddiejessup/eddiejessup.github.io
         path: '_site'
 

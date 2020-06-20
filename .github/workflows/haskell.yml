@@ -17,6 +17,7 @@ jobs:
     - uses: actions/checkout@master
       with:
         name: eddiejessup/eddiejessup.github.io
+        repository: eddiejessup/elliot-marsden-site
         path: 'foo'
 
     - uses: actions/setup-haskell@v1
@@ -36,7 +37,17 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
 
-    - name: Build
+    - name: Build binary
       run: |
         cabal new-update
         cabal new-build
+
+    - name: Build site
+      run: |
+        cabal new-run
+
+    - name: Push site
+      run: |
+        cd _site
+        git commit -m"Update from CI"
+        git push

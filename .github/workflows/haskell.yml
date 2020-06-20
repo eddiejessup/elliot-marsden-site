@@ -17,8 +17,8 @@ jobs:
     - uses: actions/checkout@master
       with:
         name: eddiejessup/eddiejessup.github.io
-        repository: eddiejessup/elliot-marsden-site
-        path: 'foo'
+        repository: eddiejessup/eddiejessup.github.io
+        path: '_site'
 
     - uses: actions/setup-haskell@v1
       with:

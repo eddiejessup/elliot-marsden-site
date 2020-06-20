@@ -13,11 +13,30 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - uses: actions/checkout@master
+      with:
+        name: eddiejessup/eddiejessup.github.io
+        path: 'foo'
+
     - uses: actions/setup-haskell@v1
       with:
-        ghc-version: '8.8.2'
-        cabal-version: '3.0'
+        ghc-version: '8.8.3'
+        cabal-version: '3.2'
+
+    - name: Cache
+      uses: actions/cache@v1
+      env:
+        cache-name: cache-cabal
+      with:
+        path: ~/.cabal
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
 
     - name: Build
       run: |
-        stack build
+        cabal new-update
+        cabal new-build

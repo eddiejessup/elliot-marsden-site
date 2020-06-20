@@ -1,0 +1,29 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 685cd8628288a379b9877fed4aaf83abf9e31f9fe4aefad2300b05f32170fc39
+
+name:           elliot-marsden-site
+version:        0.1.0.0
+author:         Elliot Marsden
+maintainer:     elliot.marsden@gmail.com
+copyright:      Copyright (c) 2020 Elliot Marsden
+license:        BSD3
+build-type:     Simple
+
+executable site
+  main-is: Site.hs
+  other-modules:
+      Paths_elliot_marsden_site
+  ghc-options: -threaded -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints -Wno-warnings-deprecations -Wno-incomplete-patterns -Wno-incomplete-uni-patterns -Wmissing-deriving-strategies -O0 +RTS -A128m -n2m -RTS -j -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base
+    , directory
+    , extra
+    , filepath
+    , hakyll
+    , split
+  default-language: Haskell2010

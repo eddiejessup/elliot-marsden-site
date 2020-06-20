@@ -10,7 +10,7 @@ dependencies:
 - directory
 - extra
 - filepath
-- hakyll==4.13.3.0
+- hakyll
 - split
 
 ghc-options:

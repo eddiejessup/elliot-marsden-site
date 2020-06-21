@@ -12,15 +12,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Clone site source repository
+      uses: actions/checkout@v2
 
-    - uses: actions/checkout@v2
+    - name: Clone site output repository into '_site'
+      uses: actions/checkout@v2
       with:
         name: Site
         repository: eddiejessup/eddiejessup.github.io
         path: '_site'
 
-    - uses: actions/setup-haskell@v1
+    - name: Set up Haskell tools
+      uses: actions/setup-haskell@v1
       with:
         ghc-version: '8.8.3'
         cabal-version: '3.2'
@@ -49,5 +52,6 @@ jobs:
     - name: Push site
       run: |
         cd _site
+        git add .
         git commit -m"Update from CI"
         git push

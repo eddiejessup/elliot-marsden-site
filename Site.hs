@@ -43,30 +43,27 @@ rules = do
     match "pages/*" do
         route $ dropPrefix `composeRoutes` setExtension "html"
         compile $ pandocCompiler
-            >>= renderDefault mempty
+            >>= renderDefault defaultContext
 
     -- Independent posts.
     match "posts/*" do
         route $ setExtension "html"
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html"    dateCtx
-            >>= renderDefault dateCtx
+        compile postCompiler
 
     -- Snippet posts.
     match (fromRegex (snippetTempDir </> "*")) do
         route $ replaceDir "posts" `composeRoutes` setExtension "html"
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html"    dateCtx
-            >>= renderDefault dateCtx
+        compile postCompiler
 
     -- Post list (proper and snippets).
     create ["all-posts.html"] do
         route idRoute
         compile do
-            postsField <- loadAllPostsField
+            allPostsCtx <- loadAllPostsCtx
             let ctx = mconcat
-                    [ postsField
+                    [ allPostsCtx
                     , constField "title" "All posts"
+                    , defaultContext
                     ]
 
             makeItem ""
@@ -77,7 +74,8 @@ rules = do
     match "index.html" do
         route idRoute
         compile do
-            ctx <- loadAllPostsField
+            allPostsCtx <- loadAllPostsCtx
+            let ctx = allPostsCtx <> defaultContext
             getResourceBody
                 >>= applyAsTemplate ctx
                 >>= renderDefault ctx
@@ -86,25 +84,31 @@ rules = do
     match "templates/*" $
         compile templateBodyCompiler
 
+postCompiler :: Compiler (Item String)
+postCompiler =
+    pandocCompiler
+        >>= loadAndApplyTemplate "templates/post.html" postCtx
+        >>= renderDefault postCtx
+
 snippetTempDir :: FilePath
 snippetTempDir = "snippets-temp"
 
-renderDefault :: _ -> Compiler _
-renderDefault ctx =
-    loadAndApplyTemplate "templates/default.html" (ctx <> defaultContext)
+renderDefault :: Context String -> Item String -> Compiler (Item String)
+renderDefault ctx item =
+    loadAndApplyTemplate "templates/default.html" ctx item
         >>= relativizeUrls
 
-loadAllPostsField :: Compiler (Context b)
-loadAllPostsField = do
+loadAllPostsCtx :: Compiler (Context String)
+loadAllPostsCtx = do
     posts <- loadAllPostsAndSnippets >>= recentFirst
-    pure $ listField "posts" dateCtx (pure posts)
+    pure $ listField "posts" postCtx (pure posts)
 
 loadAllPostsAndSnippets :: Compiler [Item String]
 loadAllPostsAndSnippets =
     (<>) <$> loadAll "posts/*" <*> loadAll "snippets-temp/*"
 
-dateCtx :: Context String
-dateCtx = dateField "date" "%B %e, %Y"
+postCtx :: Context String
+postCtx = dateField "date" "%B %e, %Y" <> defaultContext
 
 dropPrefix :: Routes
 dropPrefix = customRoute $

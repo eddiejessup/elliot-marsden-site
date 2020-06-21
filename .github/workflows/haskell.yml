@@ -22,6 +22,13 @@ jobs:
         repository: eddiejessup/eddiejessup.github.io
         path: '_site'
 
+    - name: Push site changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        repository: eddiejessup/eddiejessup.github.io
+        directory: _site
+
     - name: Set up Haskell tools
       uses: actions/setup-haskell@v1
       with:
@@ -40,11 +47,6 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
 
-    - name: Build binary
-      run: |
-        cabal new-update
-        cabal new-build
-
     - name: Build site
       run: |
         cabal new-run . -- build
@@ -59,6 +61,6 @@ jobs:
     - name: Push site changes
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUBTOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         directory: _site
         repository: eddiejessup/eddiejessup.github.io

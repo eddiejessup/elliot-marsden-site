@@ -42,8 +42,9 @@ jobs:
           ${{ runner.os }}-
 
     - name: Clear out existing site files and site cache
+      working-directory: _site
       run: |
-        rm -r _cache _site/*.html _site/css _site/images _site/posts
+        rm -r *.html css images posts
 
     - name: Build site
       run: |
@@ -54,7 +55,8 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git commit -a -m "Update from CI"
+        git add .
+        git commit -m "Update from CI"
 
     - name: Push site changes
       uses: ad-m/github-push-action@master

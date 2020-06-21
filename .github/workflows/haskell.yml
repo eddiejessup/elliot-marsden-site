@@ -49,9 +49,15 @@ jobs:
       run: |
         cabal new-run . -- build
 
-    - name: Push site
+    - name: Commit site changes
+      working-directory: _site
       run: |
-        cd _site
-        git add .
-        git commit -m"Update from CI"
-        git push
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit -m "Update from CI" -a
+
+    - name: Push site changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        directory: _site

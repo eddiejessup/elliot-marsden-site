@@ -21,13 +21,22 @@ jobs:
         name: Site
         repository: eddiejessup/eddiejessup.github.io
         path: '_site'
+        token: ${{ secrets.GITHUBTOKEN }}
 
     - name: Push site changes
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUBTOKEN }}
-        repository: eddiejessup/eddiejessup.github.io
         directory: _site
+        repository: eddiejessup/eddiejessup.github.io
+
+    - name: Push site changes way 2
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        ACCESS_TOKEN: ${{ secrets.GITHUBTOKEN }}
+        BRANCH: master
+        FOLDER: _test
+        REPOSITORY_NAME: eddiejessup/eddiejessup.github.io
 
     - name: Set up Haskell tools
       uses: actions/setup-haskell@v1

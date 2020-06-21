@@ -44,7 +44,7 @@ jobs:
 
     - name: Build site
       run: |
-        cabal new-run build
+        cabal new-run . -- build
 
     - name: Push site
       run: |

@@ -25,7 +25,7 @@ jobs:
     - name: Push site changes
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GITHUBTOKEN }}
         repository: eddiejessup/eddiejessup.github.io
         directory: _site
 
@@ -61,6 +61,6 @@ jobs:
     - name: Push site changes
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GITHUBTOKEN }}
         directory: _site
         repository: eddiejessup/eddiejessup.github.io

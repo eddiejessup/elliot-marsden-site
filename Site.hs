@@ -91,20 +91,27 @@ rules = do
 
 customPandocCompiler :: Compiler (Item String)
 customPandocCompiler =
-    pandocCompilerWith defaultHakyllReaderOptions defaultWriterOptions
+    pandocCompilerWith defaultReaderOptions defaultWriterOptions
 
-defaultWriterExtensions :: Extensions
-defaultWriterExtensions = extensionsFromList
-    [ Ext_tex_math_dollars
-    , Ext_smart
+defaultExtensions :: Extensions
+defaultExtensions = extensionsFromList
+    [ Ext_auto_identifiers
     , Ext_autolink_bare_uris
+    , Ext_backtick_code_blocks
+    , Ext_smart
+    , Ext_tex_math_dollars
     ]
+
+defaultReaderOptions :: ReaderOptions
+defaultReaderOptions =
+    defaultHakyllReaderOptions
+        & G.P.typed @Extensions %~ (<> defaultExtensions)
 
 defaultWriterOptions :: WriterOptions
 defaultWriterOptions =
     defaultHakyllWriterOptions
         & G.P.typed @HTMLMathMethod .~ MathJax defaultMathJaxURL
-        & G.P.typed @Extensions %~ (<> defaultWriterExtensions)
+        & G.P.typed @Extensions %~ (<> defaultExtensions)
 
 postCompiler :: Compiler (Item String)
 postCompiler =

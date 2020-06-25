@@ -44,7 +44,7 @@ jobs:
     - name: Clear out existing site files and site cache
       working-directory: _site
       run: |
-        rm -r *.html css images posts
+        rm -rf *.html css images posts
 
     - name: Build site
       run: |

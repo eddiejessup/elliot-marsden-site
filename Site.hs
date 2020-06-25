@@ -96,9 +96,8 @@ customPandocCompiler =
 defaultWriterExtensions :: Extensions
 defaultWriterExtensions = extensionsFromList
     [ Ext_tex_math_dollars
-    -- , Ext_tex_math_double_backslash
-    -- , Ext_tex_math_single_backslash
     , Ext_smart
+    , Ext_autolink_bare_uris
     ]
 
 defaultWriterOptions :: WriterOptions

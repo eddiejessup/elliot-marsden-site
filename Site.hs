@@ -1,5 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications #-}
 
 import Control.Monad (when)
 import Data.Bifunctor (bimap)
@@ -9,6 +11,9 @@ import Data.List.Split (splitOn)
 import Hakyll
 import System.Directory (createDirectoryIfMissing, withCurrentDirectory)
 import System.FilePath (takeFileName, replaceDirectory, (</>), (<.>))
+import Text.Pandoc.Options
+import qualified Data.Generics.Product as G.P
+import Optics.Core
 
 main :: IO ()
 main = do
@@ -31,18 +36,18 @@ rules :: Rules ()
 rules = do
     -- Images.
     match "images/*" do
-        route   idRoute
+        route idRoute
         compile copyFileCompiler
 
     -- CSS.
     match "css/*" do
-        route   idRoute
+        route idRoute
         compile compressCssCompiler
 
     -- Static pages like 'about' and 'contact'.
     match "pages/*" do
         route $ dropPrefix `composeRoutes` setExtension "html"
-        compile $ pandocCompiler
+        compile $ customPandocCompiler
             >>= renderDefault defaultContext
 
     -- Independent posts.
@@ -84,9 +89,27 @@ rules = do
     match "templates/*" $
         compile templateBodyCompiler
 
+customPandocCompiler :: Compiler (Item String)
+customPandocCompiler =
+    pandocCompilerWith defaultHakyllReaderOptions defaultWriterOptions
+
+defaultWriterExtensions :: Extensions
+defaultWriterExtensions = extensionsFromList
+    [ Ext_tex_math_dollars
+    -- , Ext_tex_math_double_backslash
+    -- , Ext_tex_math_single_backslash
+    , Ext_smart
+    ]
+
+defaultWriterOptions :: WriterOptions
+defaultWriterOptions =
+    defaultHakyllWriterOptions
+        & G.P.typed @HTMLMathMethod .~ MathJax defaultMathJaxURL
+        & G.P.typed @Extensions %~ (<> defaultWriterExtensions)
+
 postCompiler :: Compiler (Item String)
 postCompiler =
-    pandocCompiler
+    customPandocCompiler
         >>= loadAndApplyTemplate "templates/post.html" postCtx
         >>= renderDefault postCtx
 

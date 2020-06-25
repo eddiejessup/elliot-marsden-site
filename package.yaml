@@ -10,7 +10,10 @@ dependencies:
 - directory
 - extra
 - filepath
+- generic-optics
 - hakyll
+- optics-core
+- pandoc
 - split
 
 ghc-options:

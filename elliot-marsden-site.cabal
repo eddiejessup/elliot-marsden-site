@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 685cd8628288a379b9877fed4aaf83abf9e31f9fe4aefad2300b05f32170fc39
+-- hash: b92b7121adf8a6c040766aa0a83a663952d1a07585b65fcb2769451843622764
 
 name:           elliot-marsden-site
 version:        0.1.0.0
@@ -24,6 +24,9 @@ executable site
     , directory
     , extra
     , filepath
+    , generic-optics
     , hakyll
+    , optics-core
+    , pandoc
     , split
   default-language: Haskell2010

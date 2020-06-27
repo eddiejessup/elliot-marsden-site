@@ -17,7 +17,7 @@ Another way this distortion can happen is if there is some transformation of our
 
 I have the impression that of these two causes of distortion, sampling bias gets more attention, at least in surveys whose population consists of people. However, I wanted to investigate the effect of measurement bias in such contexts. I'm specifically interested in surveys of behaviour where we feel good about having access to lots of data. In some sense, bigger data eventually fixes sampling bias for any finite population: as you sample more people, eventually you approach the population size, and there isn't such a thing as a biased sample of the whole population. This is unrealistic, but I think the intuition informs our perspective of large data sets: the data probably has sampling bias, but it's such a big sample it must be representative of _some_ broad group, because there isn't really _any_ casually collected data set of ten million people whose member are all unusual in quite the same way.
 
-I think this leads to an understandable intuition that whether you are dominated by systematic bias or random noise, more data will improve estimates at any margin, as long as you don't wilfully increase bias. However, it seems likely that the marginal cost of acquiring an extra data point increases quite rapidly, for a constant amount of bias: getting an accurately measured, representative sample of ten thousand people might be more than proportionately costly than getting a sample of the same quality with one hundred people. When bias dominates random noise as the limit on uncertainty, might _decreasing_ the sample size let us _increase_ the accuracy of our estimates, for the same cost?
+I think this leads to an understandable intuition that whether you are dominated by systematic bias or random noise, more data will improve estimates at any margin, as long as you don't wilfully increase bias. However, it seems likely that the marginal cost of acquiring an extra observation increases quite rapidly, for a constant amount of bias: getting an accurately measured, representative sample of ten thousand people might be more than proportionately costly than getting a sample of the same quality with one hundred people. When bias dominates random noise as the limit on uncertainty, might _decreasing_ the sample size let us _increase_ the accuracy of our estimates, for the same cost?
 
 ## Investigation
 
@@ -35,13 +35,13 @@ To measure the quality of a protocol, let's consider the root-mean-square deviat
 
 $$\text{rms}_p := \sqrt{\int p(x) (x - \mu_0)^2 \, dx} := \sqrt{A}$$
 
-$$A = \int p(x) x^2 - 2 x \mu_0 p(x) + \mu_0^2 p(x) \, dx$$
+$$A = \int \underbrace{p(x) x^2}_{(a)} - \underbrace{2 x \mu_0 p(x)}_{(b)} + \underbrace{\mu_0^2 p(x)}_{(c)} \, dx$$
 
-We can recognise the second quantity as a constant multiple of the expected value of $p(x)$, and the third as a constant multiple of the integrated distribution, which is $1$ by definition. The first quantity is the second _non-central_ moment about $\mu_0$ (as opposed to the more common second _central_ moment, also known as the variance, which is centred on the expected value). A bit of mundane maths tells us that the second moment of a normal distribution with parameters $\sigma_p$ and $\mu_p$, centred on some point $c$ is $\sigma_p^2 + (\mu_p - c)^2$. Using these substitutions and cancelling some terms simplifies our expression to,
+We can recognise term $(b)$ as a constant multiple of the expected value of $p(x)$, and term $(c)$ as a constant multiple of the integrated distribution, which is $1$ by definition. Term $(a)$, maybe a bit less obviously, is the second non-central moment about $\mu_0$ (as opposed to the more common second _central_ moment, also known as the variance, which is centred on the expected value). A bit of mundane maths tells us that the second moment of a normal distribution with parameters $\sigma_p$ and $\mu_p$, centred on some point $c$ is $\sigma_p^2 + (\mu_p - c)^2$. Using these substitutions and cancelling some terms simplifies our expression to,
 
 $$A = \sigma_p^2 + (\mu_p - \mu_0)^2$$
 
-We know these values for the unbiased and biased protocols, so we can conclude that,
+We know these values for the unbiased and biased protocols, so we conclude that,
 
 $$\text{rms}_u = \sqrt{\sigma^2 / n_u} \, , \quad \text{rms}_b = \sqrt{\sigma^2 / n_b + b^2}$$
 
@@ -52,11 +52,13 @@ $$\boxed{n_u = \frac{1}{1 / n_b + (b / \sigma)^2}}$$
 
 To recap, this formula tells us that if we have a normally distributed population with standard deviation $\sigma$, and we are given two options for generating data: an unbiased sample of size $n_u$, or a sample of size $n_b$ with a constant added measurement bias $b$, we should prefer the unbiased sample when its size is greater than the right-hand side above.
 
-This is a bit abstract, so let's have an example. Let's assume we are surveying the height of men. The height of men has a standard deviation of around 7.6 centimetre. Let's say we could get a sample of 1,000 heights through an online survey, where we tell the respondents how to measure their height. Maybe each respondent over-reports their height by 1 centimetre, maybe because they like the idea of being taller, or due to some physical awkwardness from measuring one's own height. So we have $n_b = 10^3$, and $b = 2$. Maybe we are considering another option where a third party would measure and report the result, and this produces a practically unbiased estimate. This method may be more costly per respondent. How big would the third-party-reported protocol sample have to be to produce an equally good estimate as the self-reported protocol sample?
+## Example
+
+Let's make this result a bit more concrete. Let's assume we are surveying the height of men. The height of men has a standard deviation of around 7.6 centimetre. Let's say we could get a sample of 1,000 heights through an online survey, where we tell the respondents how to measure their height. Maybe each respondent over-reports their height by 1 centimetre, maybe because they like the idea of being taller, or due to some physical awkwardness from measuring one's own height. So we have $n_b = 10^3$, and $b = 2$. Maybe we are considering another option where a third party would measure and report the result, and this produces a practically unbiased estimate. This method may be more costly per respondent. How big would the third-party-reported protocol sample have to be to produce an equally good estimate as the self-reported protocol sample?
 
 $$n_u = \frac{1}{1 / 10^3 + (1 / 7.6)^2} = \frac{1}{0.001 + 0.017} \simeq 56$$
 
-Around fifty expensively obtained samples may cost less than a survey reaching one thousand people.
+A sample of fifty expensively obtained observations may cost less than a sample of one thousand observations where each is more cheaply obtained.
 
 We can generalise a bit by dividing by $n_b$, to obtain the _share_ of the biased sample size we would need, if we had an unbiased measurement:
 
@@ -70,4 +72,4 @@ A fair objection to the above line of reasoning is that we don't know that an al
 
 ## Conclusion
 
-In many scenarios we might pursue more data without question, to reduce our uncertainty of a population mean. I think the above logic motivates a view where we consider bias and noise as functions of our sample size and investment cost, and make decisions to minimise uncertainty over that space. It is difficult in many situations to quantify how much measurement bias is up for grabs by changing our sampling procedure, but we can usually put bounds based on heuristic reasoning. If we assume there are some mundane variable costs involved in gathering extra data points, it may be worthwhile to consider how much payoff we could get, for a similar investment cost, by instead trying to reduce systematic errors. We might find that where we assumed we were in a noise-limited regime, in fact our uncertainty is limited by bias.
+In many scenarios we might pursue more data without question, to reduce our uncertainty of a population mean. I think the above logic motivates a view where we consider bias and noise as functions of our sample size and investment cost, and make decisions to minimise uncertainty over that space. It is difficult in many situations to quantify how much measurement bias is up for grabs by changing our sampling procedure, but we can usually put bounds based on heuristic reasoning. If we assume there are some mundane variable costs involved in gathering extra observations, it may be worthwhile to consider how much payoff we could get, for a similar investment cost, by instead trying to reduce systematic errors. We might find that where we assumed we were in a noise-limited regime, in fact our uncertainty is limited by bias.

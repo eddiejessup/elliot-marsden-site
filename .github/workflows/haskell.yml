@@ -1,10 +1,9 @@
-name: Haskell CI
+name: Update site
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches:
+      - master
 
 jobs:
   build:
@@ -64,3 +63,21 @@ jobs:
         github_token: ${{ secrets.GITHUBTOKEN }}
         directory: _site
         repository: eddiejessup/eddiejessup.github.io
+
+    - name: Notify on success
+      if: ${{ success() }}
+      uses: techulus/push-github-action@1.0.0
+      env:
+        API_KEY: ${{ secrets.PUSH_API_KEY }}
+        MESSAGE: "Updated site"
+        TITLE: "Success: GitHub Action"
+        LINK: http://test.elliotmarsden.com/
+
+    - name: Notify on failure
+      if: ${{ failure() }}
+      uses: techulus/push-github-action@1.0.0
+      env:
+        API_KEY: ${{ secrets.PUSH_API_KEY }}
+        MESSAGE: "Failed to update site"
+        TITLE: "Failure: GitHub Action"
+        LINK: https://github.com/eddiejessup/elliot-marsden-site/actions

@@ -54,8 +54,8 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add .
-        git commit -m "Update from CI"
+        git add -A
+        git diff-index --quiet HEAD || git commit -m "Update from CI"
 
     - name: Push site changes
       uses: ad-m/github-push-action@master
@@ -71,7 +71,7 @@ jobs:
         API_KEY: ${{ secrets.PUSH_API_KEY }}
         MESSAGE: "Updated site"
         TITLE: "Success: GitHub Action"
-        LINK: http://test.elliotmarsden.com/
+        LINK: http://test.elliotmarsden.com
 
     - name: Notify on failure
       if: ${{ failure() }}

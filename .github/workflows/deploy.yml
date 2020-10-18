@@ -7,77 +7,59 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Clone site source repository
-      uses: actions/checkout@v2
+      - name: Clone site source repository
+        uses: actions/checkout@v2
 
-    - name: Clone site output repository into '_site'
-      uses: actions/checkout@v2
-      with:
-        name: Site
-        repository: eddiejessup/eddiejessup.github.io
-        path: '_site'
-        token: ${{ secrets.GITHUBTOKEN }}
+      - name: Set up Haskell tools
+        uses: actions/setup-haskell@v1
+        with:
+          ghc-version: "8.8.3"
+          cabal-version: "3.2"
 
-    - name: Set up Haskell tools
-      uses: actions/setup-haskell@v1
-      with:
-        ghc-version: '8.8.3'
-        cabal-version: '3.2'
+      - name: Cache
+        uses: actions/cache@v1
+        env:
+          cache-name: cache-cabal
+        with:
+          path: ~/.cabal
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
-    - name: Cache
-      uses: actions/cache@v1
-      env:
-        cache-name: cache-cabal
-      with:
-        path: ~/.cabal
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
+      - name: Build site
+        run: |
+          cabal new-run . -- build
 
-    - name: Clear out existing site files and site cache
-      working-directory: _site
-      run: |
-        rm -rf *.html css images posts
+      - name: Deploy, by syncing to S3 bucket
+        uses: jakejarvis/s3-sync-action@v0.5.1
+        with:
+          args: --acl public-read --delete --follow-symlinks
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_PRODUCTION_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-west-1
+          SOURCE_DIR: "./_site"
 
-    - name: Build site
-      run: |
-        cabal new-run . -- build
+      - name: Notify on success
+        if: ${{ success() }}
+        uses: techulus/push-github-action@1.0.0
+        env:
+          API_KEY: ${{ secrets.PUSH_API_KEY }}
+          MESSAGE: "Updated site"
+          TITLE: "Success: GitHub Action"
+          LINK: http://blog.elliotmarsden.com
 
-    - name: Commit site changes
-      working-directory: _site
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add -A
-        git diff-index --quiet HEAD || git commit -m "Update from CI"
-
-    - name: Push site changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUBTOKEN }}
-        directory: _site
-        repository: eddiejessup/eddiejessup.github.io
-
-    - name: Notify on success
-      if: ${{ success() }}
-      uses: techulus/push-github-action@1.0.0
-      env:
-        API_KEY: ${{ secrets.PUSH_API_KEY }}
-        MESSAGE: "Updated site"
-        TITLE: "Success: GitHub Action"
-        LINK: http://test.elliotmarsden.com
-
-    - name: Notify on failure
-      if: ${{ failure() }}
-      uses: techulus/push-github-action@1.0.0
-      env:
-        API_KEY: ${{ secrets.PUSH_API_KEY }}
-        MESSAGE: "Failed to update site"
-        TITLE: "Failure: GitHub Action"
-        LINK: https://github.com/eddiejessup/elliot-marsden-site/actions
+      - name: Notify on failure
+        if: ${{ failure() }}
+        uses: techulus/push-github-action@1.0.0
+        env:
+          API_KEY: ${{ secrets.PUSH_API_KEY }}
+          MESSAGE: "Failed to update site"
+          TITLE: "Failure: GitHub Action"
+          LINK: https://github.com/eddiejessup/elliot-marsden-site/actions

@@ -16,7 +16,7 @@ jobs:
       - name: Set up Haskell tools
         uses: haskell/actions/setup@v1
         with:
-          ghc-version: "8.10.4"
+          ghc-version: "8.10.5"
           cabal-version: "latest"
 
       - name: Cache

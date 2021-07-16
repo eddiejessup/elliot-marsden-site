@@ -47,14 +47,13 @@ $$\text{rms}_u = \sqrt{\sigma^2 / n_u} \, , \quad \text{rms}_b = \sqrt{\sigma^2 
 
 We should switch our preferred protocol around the point where the uncertainties arising from each protocol are equal, so requiring $\text{rms}_u = \text{rms}_b$ and rearranging,
 
-
 $$\boxed{n_u = \frac{1}{1 / n_b + (b / \sigma)^2}}$$
 
 To recap, this formula tells us that if we have a normally distributed population with standard deviation $\sigma$, and we are given two options for generating data: an unbiased sample of size $n_u$, or a sample of size $n_b$ with a constant added measurement bias $b$, we should prefer the unbiased sample when its size is greater than the right-hand side above.
 
 ## Example
 
-Let's make this result a bit more concrete. Let's assume we are surveying the height of men. The height of men has a standard deviation of around 7.6 centimetre. Let's say we could get a sample of 1,000 heights through an online survey, where we tell the respondents how to measure their height. Maybe each respondent over-reports their height by 1 centimetre, maybe because they like the idea of being taller, or due to some physical awkwardness from measuring one's own height. So we have $n_b = 10^3$, and $b = 2$. Maybe we are considering another option where a third party would measure and report the result, and this produces a practically unbiased estimate. This method may be more costly per respondent. How big would the third-party-reported protocol sample have to be to produce an equally good estimate as the self-reported protocol sample?
+Let's make this result a bit more concrete. Let's assume we are surveying the height of men. The height of men has a standard deviation of around 7.6 centimetres. Let's say we could get a sample of 1,000 heights through an online survey, where we tell the respondents how to measure their height. Maybe each respondent over-reports their height by 1 centimetre, maybe because they like the idea of being taller, or due to some physical awkwardness from measuring one's own height. So we have $n_b = 10^3$, and $b = 1$. Maybe we are considering another option where a third party would measure and report the result, and this produces a practically unbiased estimate. This method may be more costly per respondent. How big would the third-party-reported protocol sample have to be to produce an equally good estimate as the self-reported protocol sample?
 
 $$n_u = \frac{1}{1 / 10^3 + (1 / 7.6)^2} = \frac{1}{0.001 + 0.017} \simeq 56$$
 
@@ -68,7 +67,7 @@ For example, if we had 1000 samples with a bias on the scale of 5% of the popula
 
 ## Extension
 
-A fair objection to the above line of reasoning is that we don't know that an alternative protocol will have exactly zero measurement bias. We can account for this by introducing an extra, uncorrelated additive bias that is present in both protocols. This increases the uncertainty for both protocols, but when we equate their errors in the same way as above, the common bias term cancels out, such that the formula reduces again to the one presented. We can therefore extend the argument to apply to situations where we are considering a change in our procedure to remove one marginal source of measurement bias, even when it is potentially one source among many.
+A fair objection to the above line of reasoning is that we don't know that an alternative protocol will have exactly zero measurement bias. We can account for this by introducing an extra, uncorrelated additive bias that is present in both protocols. This increases the uncertainty for both protocols, but when we equate their errors in the same way as above, the common bias term cancels out, such that the formula reduces again to the one presented. We can therefore extend the argument to apply to situations where we are considering a change in our procedure to remove one source of measurement bias, even when there may be others that will remain.
 
 ## Conclusion
 
